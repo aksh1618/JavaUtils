@@ -9,21 +9,21 @@ public interface CheckedFunction<T, R> {
     R apply(T t) throws Exception;
 
     static <I, O> Function<I, O> wrap(CheckedFunction<I, O> function) {
-        return i -> CommonUtils.tryCatch(() -> function.apply(i), CommonUtils.throwWrappedInRuntime()).orElse(null);
+        return i -> ExceptionUtils.tryCatch(() -> function.apply(i), ExceptionUtils::throwWrappedInRuntime).orElse(null);
     }
 
     static <I, O> Function<I, Optional<O>> wrapWithHandler(
             CheckedFunction<I, O> function,
             Consumer<Exception> exceptionHandler
     ) {
-        return i -> CommonUtils.tryCatch(() -> function.apply(i), exceptionHandler);
+        return i -> ExceptionUtils.tryCatch(() -> function.apply(i), exceptionHandler);
     }
 
     static <I, O> Function<I, Optional<O>> wrapWithHandler(
             CheckedFunction<I, O> function,
             BiConsumer<I, Exception> exceptionHandler
     ) {
-        return i -> CommonUtils.tryCatch(() -> function.apply(i), e -> exceptionHandler.accept(i, e));
+        return i -> ExceptionUtils.tryCatch(() -> function.apply(i), e -> exceptionHandler.accept(i, e));
     }
 
 }

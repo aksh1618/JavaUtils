@@ -8,14 +8,14 @@ public interface CheckedSupplier<R> {
     R get() throws Exception;
 
     static <O> Supplier<O> wrap(CheckedSupplier<O> checkedSupplier) {
-        return () -> CommonUtils.tryCatch(checkedSupplier, CommonUtils.throwWrappedInRuntime()).orElse(null);
+        return () -> ExceptionUtils.tryCatch(checkedSupplier, ExceptionUtils::throwWrappedInRuntime).orElse(null);
     }
 
     static <O> Supplier<Optional<O>> wrapWithHandler(
             CheckedSupplier<O> checkedSupplier,
             Consumer<Exception> exceptionHandler
     ) {
-        return () -> CommonUtils.tryCatch(checkedSupplier, exceptionHandler);
+        return () -> ExceptionUtils.tryCatch(checkedSupplier, exceptionHandler);
     }
 
 }
